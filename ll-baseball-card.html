@@ -1,0 +1,103 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../ll-theme/ll-theme.html">
+<link rel="stylesheet" href="./ll-baseball-card.css">
+
+<!--
+A baseball card UI component for showing an image with content in a container
+
+Example:
+
+    <ll-baseball-card image-source="http://lorempixel.com/300/120" title="Example Card">
+      <p>Some Content below the title</p>
+    </ll-baseball-card>
+
+@demo
+-->
+<dom-module id="ll-baseball-card">
+
+  <style>
+  </style>
+
+  <template>
+    <div class="baseballcard-container">
+      <div class="thumbnail baseballcard">
+        <a href="#" id="image" class="img-link">
+        </a>
+      </div>
+      <div class="caption">
+        <h3 class="gridview-header text-center"><span>{{title}}</span></h3>
+        <content></content>
+      </div>
+    </div>
+  </template>
+
+</dom-module>
+
+<script>
+
+  LLBaseballCard = Polymer({
+
+    is: 'll-baseball-card',
+
+    properties: {
+      /**
+       * Identifier of baseball card primarily used for identifying which card was clicked
+       */
+      id: {
+        type: String,
+        value: ''
+      },
+      /**
+       * Title content of the baseball card
+       */
+      title: {
+        type: String,
+        value: ''
+      },
+      /**
+       * Source of the image to show for the baseball card. Can be a relative path (/assets/images/ping.png) or a web address (http://lorempixel.com/100/100)
+       */
+      imageSource: {
+        type: String,
+        value: ''
+      }
+    },
+
+    /**
+     * Fired when a baseball card is clicked. Sends the id on the event
+     *
+     * @event ll-baseball-card-clicked
+     */
+
+    listeners: {
+      'tap': 'onTap'
+    },
+
+    ready: function() {
+      this.$.image.style.backgroundImage = "url('" + this.imageSource + "')";
+    },
+
+    factoryImpl: function(id, title, imageSource) {
+      this.id = id || '';
+      this.title = title || '';
+      this.imageSource = imageSource || '';
+    },
+
+    attached: function() {
+      console.log('attached');
+      if (this.id === '') {
+        throw Error('id is required');
+      } else if (this.title === '') {
+        throw Error('title is required');
+      } else if (this.imageSource === '') {
+        throw Error('imageSource is required');
+      }
+    },
+
+    onTap: function() {
+      this.fire('ll-baseball-card-clicked', { id: this.id });
+    }
+
+  });
+
+</script>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>ll-baseball-card Demo</title>
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="../ll-baseball-card.html">
+  </head>
+  <body>
+
+    <p>An example of <code>&lt;ll-baseball-card&gt;</code>:</p>
+
+    <style>
+      .dl-horizontal dt {
+        text-overflow: initial;
+        font-size: 14px;
+      }
+      .dl-horizontal dd {
+        font-size: 14px;
+      }
+    </style>
+
+    <div class="row">
+      <ll-baseball-card image-source="http://lorempixel.com/300/120" class="col-md-3 col-sm-6" id="Hello" title="Hello">
+      </ll-baseball-card>
+
+      <ll-baseball-card image-source="http://lorempixel.com/300/120" id="Plain" title="Without any content" class="col-md-3 col-sm-6">
+      </ll-baseball-card>
+
+      <ll-baseball-card image-source="http://lorempixel.com/300/120/technics" id="Full Featured" title="With some content" class="col-md-3 col-sm-6">
+        <p>Here is my amazing content</p>
+        <h6>I can put anything I want in here</h6>
+      </ll-baseball-card>
+    </div>
+
+  </body>
+</html>

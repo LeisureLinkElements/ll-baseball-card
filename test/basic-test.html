@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../ll-baseball-card.html">
+  </head>
+  <body>
+
+    <script>
+
+      describe('ll-baseball-card', function() {
+
+        describe('required properties', function() {
+
+          it('should require id', function() {
+            expect(function() {
+              new LLBaseballCard().attached();
+            }).to.throw('id is required');
+          });
+
+          it('should require title', function() {
+            expect(function() {
+              new LLBaseballCard('id').attached();
+            }).to.throw('title is required');
+          });
+
+          it('should require imageSource', function() {
+            expect(function() {
+              new LLBaseballCard('id', 'title').attached();
+            }).to.throw('imageSource is required');
+          });
+
+        })
+
+        describe('events', function() {
+
+          it('should fire an event on click', function(done) {
+            var el = new LLBaseballCard('id', 'Title', 'not/important');
+            el.addEventListener('ll-baseball-card-clicked', function(evt) {
+              expect(evt).to.be.ok;
+              done();
+            });
+
+            el.click();
+          });
+
+          it('should pass id along on event', function(done) {
+            var el = new LLBaseballCard('id', 'Title', 'not/important');
+            el.addEventListener('ll-baseball-card-clicked', function(evt) {
+              expect(evt.detail).to.have.property('id').that.equals('id');
+              done();
+            });
+
+            el.click();
+          });
+
+        });
+
+      });
+
+    </script>
+
+  </body>
+</html>
