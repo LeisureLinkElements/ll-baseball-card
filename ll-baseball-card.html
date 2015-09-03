@@ -43,13 +43,14 @@ Example:
       /**
        * Identifier of baseball card primarily used for identifying which card was clicked
        */
-      id: {
+      imageId: {
         type: String,
         value: ''
       },
       /**
        * Title content of the baseball card
        */
+
       title: {
         type: String,
         value: ''
@@ -59,6 +60,7 @@ Example:
        */
       imageSource: {
         type: String,
+        observer: '_imageSourceChanged',
         value: ''
       }
     },
@@ -70,32 +72,33 @@ Example:
      */
 
     listeners: {
-      'tap': 'onTap'
+      'tap': '_onTap'
     },
 
     ready: function() {
-      this.$.image.style.backgroundImage = "url('" + this.imageSource + "')";
+      this.imageSource = 'data:image/png;base64,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';
     },
 
-    factoryImpl: function(id, title, imageSource) {
-      this.id = id || '';
+    factoryImpl: function(imageId, title, imageSource) {
+      this.imageId = imageId || '';
       this.title = title || '';
       this.imageSource = imageSource || '';
     },
 
     attached: function() {
-      console.log('attached');
-      if (this.id === '') {
-        throw Error('id is required');
+      if (this.imageId === '') {
+        throw Error('imageId is required');
       } else if (this.title === '') {
         throw Error('title is required');
-      } else if (this.imageSource === '') {
-        throw Error('imageSource is required');
       }
     },
 
-    onTap: function() {
-      this.fire('ll-baseball-card-clicked', { id: this.id });
+    _onTap: function() {
+      this.fire('ll-baseball-card-clicked', { id: this.imageId });
+    },
+
+    _imageSourceChanged: function(newImageSource) {
+      this.$.image.style.backgroundImage = "url('" + newImageSource + "')";
     }
 
   });

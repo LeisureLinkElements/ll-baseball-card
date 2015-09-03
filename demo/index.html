@@ -22,7 +22,7 @@
     </style>
 
     <div class="row">
-      <ll-baseball-card image-source="http://lorempixel.com/300/120" class="col-md-3 col-sm-6" id="Hello" title="Hello">
+      <ll-baseball-card id="test" class="col-md-3 col-sm-6" image-id="Hello" title="Hello">
       </ll-baseball-card>
 
       <ll-baseball-card image-source="http://lorempixel.com/300/120" id="Plain" title="Without any content" class="col-md-3 col-sm-6">
@@ -33,6 +33,13 @@
         <h6>I can put anything I want in here</h6>
       </ll-baseball-card>
     </div>
+
+    <script>
+      var el = document.getElementById('test');
+      el.addEventListener('ll-baseball-card-clicked', function() {
+        el.imageSource = 'http://lorempixel.com/300/120'
+      });
+    </script>
 
   </body>
 </html>

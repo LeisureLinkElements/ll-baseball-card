@@ -17,10 +17,10 @@
 
         describe('required properties', function() {
 
-          it('should require id', function() {
+          it('should require imageId', function() {
             expect(function() {
               new LLBaseballCard().attached();
-            }).to.throw('id is required');
+            }).to.throw('imageId is required');
           });
 
           it('should require title', function() {
@@ -29,13 +29,7 @@
             }).to.throw('title is required');
           });
 
-          it('should require imageSource', function() {
-            expect(function() {
-              new LLBaseballCard('id', 'title').attached();
-            }).to.throw('imageSource is required');
-          });
-
-        })
+        });
 
         describe('events', function() {
 
@@ -49,7 +43,7 @@
             el.click();
           });
 
-          it('should pass id along on event', function(done) {
+          it('should pass imageId along on event', function(done) {
             var el = new LLBaseballCard('id', 'Title', 'not/important');
             el.addEventListener('ll-baseball-card-clicked', function(evt) {
               expect(evt.detail).to.have.property('id').that.equals('id');
