@@ -6,6 +6,10 @@
 
 .baseballcard a.img-link {
     margin: 0 -5px;
+    height: 25vw;
+    max-height: 250px;
+    min-height: 150px;
+    position: relative;
 }
 
 img {
