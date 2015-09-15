@@ -20,7 +20,7 @@
     "/demo/"
   ],
   "dependencies": {
-    "ll-theme": "LeisureLinkElements/ll-theme#~0.0.5",
+    "ll-theme": "LeisureLinkElements/ll-theme",
     "polymer": "Polymer/polymer#^1.0.0"
   },
   "devDependencies": {
