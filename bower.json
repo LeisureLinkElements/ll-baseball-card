@@ -21,6 +21,7 @@
   ],
   "dependencies": {
     "ll-theme": "LeisureLinkElements/ll-theme#~0.0.5",
+    "ll-throbber": "LeisureLinkElements/ll-throbber",
     "polymer": "Polymer/polymer#^1.0.0"
   },
   "devDependencies": {
