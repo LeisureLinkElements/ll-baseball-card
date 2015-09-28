@@ -1,7 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../ll-theme/ll-theme.html">
 <link rel="import" href="../ll-throbber/ll-cog/ll-cog.html">
-<link rel="stylesheet" href="./ll-baseball-card.css">
 
 <!--
 A baseball card UI component for showing an image with content in a container
@@ -17,6 +16,35 @@ Example:
 <dom-module id="ll-baseball-card">
 
   <style>
+
+    .baseballcard-container {
+      border: 1px solid #D5D5D5;
+      margin: 5px 0;
+      cursor: pointer;
+    }
+
+    .baseballcard a.img-link {
+      margin: 0 -5px;
+      height: 25vw;
+      max-height: 250px;
+      min-height: 150px;
+      position: relative;
+      background-color: #f0f0f0;
+    }
+
+    img {
+      width: 100%;
+    }
+
+    ll-cog {
+      width: 40px;
+      height: 40px;
+      position: absolute;
+      left: calc(50% - 20px);
+      top: calc(50% - 20px);
+      z-index: 10;
+    }
+
   </style>
 
   <template>
