@@ -25,7 +25,6 @@ Example:
       hyphens: auto;
       word-wrap: break-word;
     }
-
     .img {
       width: 100%;
       object-fit: cover;
@@ -74,12 +73,12 @@ Example:
       imageAspect: {
         type: Number,
         observer: '_imageAspectChanged',
-        value: 0
+        value: 0,
+        reflectToAttribute: true
       }
     },
 
     // Fired when a baseball card is clicked. Sends the id on the event
-    //
     // @event ll-baseball-card-clicked
 
     listeners: {
@@ -126,7 +125,6 @@ Example:
     },
 
     _fixImageAspect: function (aspect) {
-      console.log('fixImageAspect for: ', this.$.image);
       if (aspect) {
         var w = parseInt(window.getComputedStyle(this.$.image).width, 10);
         if (w) {
