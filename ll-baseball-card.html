@@ -49,24 +49,20 @@ Example:
   window.LLBaseballCard = Polymer({
     is: 'll-baseball-card',
     properties: {
-      /**
-      * Identifier of baseball card primarily used for identifying which card was clicked
-      */
+      // Identifier of baseball card primarily used for identifying
+      // which card was clicked
       imageId: {
         type: String,
         value: ''
       },
-      /**
-      * Title content of the baseball card
-      */
 
+      // Title content of the baseball card
       title: {
         type: String,
         value: ''
       },
-      /**
-      * Source of the image to show for the baseball card. Can be a relative path (/assets/images/ping.png) or a web address (http://lorempixel.com/100/100)
-      */
+      // Source of the image to show for the baseball card.
+      // Can be a relative path (/assets/images/ping.png) or a web address (http://lorempixel.com/100/100)
       imageSource: {
         type: String,
         observer: '_imageSourceChanged',
@@ -74,9 +70,7 @@ Example:
         reflectToAttribute: true
       },
 
-      /**
-      *Enforce an aspect ratio for the baseball card image
-      */
+      // Enforce an aspect ratio for the baseball card image
       imageAspect: {
         type: Number,
         observer: '_imageAspectChanged',
@@ -84,19 +78,16 @@ Example:
       }
     },
 
-    /**
-    * Fired when a baseball card is clicked. Sends the id on the event
-    *
-    * @event ll-baseball-card-clicked
-    */
+    // Fired when a baseball card is clicked. Sends the id on the event
+    //
+    // @event ll-baseball-card-clicked
 
     listeners: {
-      'tap': '_onTap',
-      'resize': '_resize'
+      'tap': '_onTap'
     },
 
     ready: function () {
-      this._onResize();
+      this._onResize = this._onResize.bind(this);
     },
 
     factoryImpl: function (imageId, title, imageSource, imageAspect) {
@@ -107,19 +98,9 @@ Example:
     },
 
     attached: function () {
-      //Why are these required?
-      if (this.imageId === '') {
-        throw Error('ll-baseball-card requires and "image-id"');
-      }
-      if (this.title === '') {
-        throw Error('ll-baseball-card requires a "title"');
-      }
-
-      this._onResize = this._onResize.bind(this);
+      this.$.image.onload = this._onResize;
+      this.$.image.onerror = this._onResize;
       window.addEventListener('resize', this._onResize);
-
-      //TODO: find out a mo bettah way to ensure images size initially
-      setTimeout(this._onResize, 500); // needs to fire after initial paint
     },
 
     detached: function () {
@@ -133,29 +114,11 @@ Example:
     _onResize: function () {
       this._fixImageAspect(this.imageAspect);
     },
-    /**
-    * Sets the template's image element to the imageSource of the component.
-    * defaults to the base64 inlinded landscape shilouette..
-    */
+
+    // Sets the template's image element to the imageSource of the component.
+    // defaults to the base64 inlinded landscape shilouette..
     _setImageSrc: function (src) {
-      var onload = (function onload() {
-        this._onResize();
-        this.$.image.removeEventListener('load', onload);
-        this.$.image.removeEventListener('error', onerror);
-      }).bind(this);
-
-      var onerror = (function onerror() {
-        this._onResize();
-        this.$.image.removeEventListener('load', onload);
-        this.$.image.removeEventListener('error', onerror);
-      }).bind(this);
-
-      this.$.image.addEventListener('error', onload);
-
-      this.$.image.addEventListener('load', onload);
       this.$.image.src = src || defaultImg;
-
-      this._onResize();
     },
 
     _imageSourceChanged: function (newImageSource) {
@@ -163,19 +126,22 @@ Example:
     },
 
     _fixImageAspect: function (aspect) {
+      console.log('fixImageAspect for: ', this.$.image);
       if (aspect) {
         var w = parseInt(window.getComputedStyle(this.$.image).width, 10);
-        var h = w * aspect;
-        this.$.image.height = h;
-      } else {
-        this.$.image.removeAttribute('height');
+        if (w) {
+          var h = w * aspect;
+          this.$.image.height = h;
+          return
+        }
       }
+      // either no aspect or no width (paint no finished).
+      this.$.image.removeAttribute('height');
     },
 
     _imageAspectChanged: function (aspect) {
       this._fixImageAspect(aspect);
     }
   });
-})()
-
+})();
 </script>
