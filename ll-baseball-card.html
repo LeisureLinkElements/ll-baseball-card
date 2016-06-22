@@ -16,14 +16,32 @@ Example:
 <dom-module id="ll-baseball-card">
   <style>
     :host {
-      box-shadow: 1px 0 4px hsla(0, 0%, 0%, 0.1);
-      padding-bottom: .5em;
+      border: 2px solid hsla(0, 0%, 0%, 0.2);
+      background-color: hsla(0, 0%, 0%, 0.05);
+      display: block;
+      position: relative;
+    }
+    :host::before {
+      content: '';
+      width: 100%;
+      padding-bottom: 100%;
       display: block;
     }
+
+    .baseballcard {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
     .title {
+      font-size: inherit;
       text-align: center;
-      hyphens: auto;
-      word-wrap: break-word;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      margin: .5em 0;
+      padding: 0 1em;
     }
     .img {
       width: 100%;
