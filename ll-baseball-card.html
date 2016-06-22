@@ -1,9 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../ll-theme/ll-theme.html">
-<link rel="import" href="../ll-throbber/ll-cog/ll-cog.html">
 
 <!--
 A baseball card UI component for showing an image with content in a container
+(IOW an opinionated <figure> with <figcaption>).
 
 Example:
 
@@ -14,164 +14,150 @@ Example:
 @demo
 -->
 <dom-module id="ll-baseball-card">
-
   <style>
-
-    .baseballcard-container {
-      border: 1px solid #D5D5D5;
-      margin: 5px 0;
-      cursor: pointer;
-    }
-
-    .baseballcard a.img-link {
-      margin: 0 -5px;
-      height: 25vw;
-      max-height: 250px;
-      min-height: 150px;
+    :host {
+      border: 2px solid hsla(0, 0%, 0%, 0.2);
+      background-color: hsla(0, 0%, 0%, 0.05);
+      display: block;
       position: relative;
-      background-color: #f0f0f0;
     }
-
-    img {
+    :host::before {
+      content: '';
       width: 100%;
+      padding-bottom: 100%;
+      display: block;
     }
 
-    ll-cog {
-      width: 40px;
-      height: 40px;
+    .baseballcard {
       position: absolute;
-      left: calc(50% - 20px);
-      top: calc(50% - 20px);
-      z-index: 10;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
     }
-
+    .title {
+      font-size: inherit;
+      text-align: center;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      margin: .5em 0;
+      padding: 0 1em;
+    }
+    .img {
+      width: 100%;
+      object-fit: cover;
+    }
   </style>
-
   <template>
-    <div class="baseballcard-container">
-      <div class="thumbnail baseballcard">
-        <a id="image" class="img-link">
-          <ll-cog id="spinner" active></ll-cog>
-        </a>
-      </div>
-      <div class="caption">
-        <h3 class="gridview-header text-center"><span>{{title}}</span></h3>
+    <figure class="baseballcard">
+      <img id="image" class="img" src="{{imageSource}}" />
+      <figcaption class="caption">
+        <h3 class="title">{{title}}</h3>
         <content></content>
-      </div>
-    </div>
+      </figcaption>
+    </figure>
   </template>
-
 </dom-module>
 
 <script>
+(function () {
+  var defaultImg = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANwAAACpCAIAAADP18SkAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wcYEhkYn//hagAACmdJREFUeNrtndlPE1Ebh6GlLUZtNVIwEWNIjBqjohI3NEZNvDGaGOTGS/8zwULpRtkqGpbuBUpLKftiWUpZW2wptNPSaftdkM/PzwW7zJSZ4fdcmTIz7Zl5nHnnnPe8p3hubq4IACbBwykAkBIASAkgJQCQEkBKACAlgJQAQEoAICWAlABASgApAYCUAFICACnBMack2x1cLhdJknw+H+cOZEIymRQKhdXV1TRK2d3dHYvFSkpKcLpBJpAkefLkSXqlJAgilUolk0mcbpAh0WiU3pgSD25AtzN40QF4+wYAUgJICQCkBJASAEgJICUAkBIASAkgJQCQEkBKACAl4Dq05+oKhcJnz55dvHgxHo/jdLP+HsbjkSTZ3d0dDAZZLGVJScm1a9cqKipwRTmDyWSiVUraH9/pdJogCFxIzkCSJN3zDhBTArzoAAApAaQEAFICSAkApASQEgBICQCkBEwHxdNYSSQSWVxc3NjYiEQiqVRKIBCcPn26srLy0qVLHCiIBylZxsrKisPh8Hg8u7u7JEn+/CeRSCSRSG7evHn//v1Tp05BSkA7BEEYjcbBwcFEIvHHDeLx+NbWVl9f3+jo6OPHj+/du8fj8SAloItQKKRUKpeXlzPZeHt7u6OjY21t7fXr1wKBAFIC6tnd3W1oaNja2spqL4fDkUgk6uvrWXe/xNs309nf31cqldkaeYDb7dbr9axrMqRkOkNDQwsLCznvbjAYvF4vpARUhpJWqzWfI6RSKYvFkkqlICWghsnJyd3d3TwPMjMzs7a2BikBNczMzOR/kGQy6fF4ICWg5tnt9/spOZTP5/ulpx1SglwIBAJUTZYPBoMsmncPKZlLLBaj6gWFIAjcKQGzKC4uRkwJKKC0tJSqwZjS0lIWZQ9xTUoWPaT+yblz56gauRaLxUKhEFIezeuqWq3e3NzkRnPOnj0rlUopOVRlZSWLMjM4JaXdbh8fH29ubt7Z2eFGi65evZr/Qfh8/uXLlxFT/o90Op1OpwvQku3tbYfDUVRUFAgEmpqa8h8IYQLV1dVisTh/sysrKyHl/1GYgVeLxRKJRA7+vbq6qlKpsl1mmoFIJJJHjx7lcwSBQFBbW8uu7DWOPL59Pt/Y2NjPn3g8nra2Ng5Uan3w4MGVK1dy3v3JkydVVVXsajJHpLTZbLFY7JcPJycnOzo66C6mSDcikejVq1e5VZ29devW8+fPWddkLki5tLQ0OTn5xz+Njo52dHQUJqilD6lU+v79+wsXLmS11927d9++fcvn8yFloUmlUiaT6ZDuSYfDodPp2N5MqVT64cOHmpqaTKJDsVj85s2buro6kUjExsayfo7O7Ozs7Ozs4dsMDAyIRKKXL1+yuqUnTpyoq6u7c+fOyMjI/Pz8H7sXpFLp9evXb9++XV5ezt6WslvKeDxuNBoz2dJgMIhEoqdPn7L9P2FVVVVVVVUgENjY2Njc3Nzb20un03w+XyKRnD9/vqKiQiKRsL2N7JZyYmJiZWUlw42/fv0qFAofPnzIgTC6rKysrKzsxo0bP8JldqVccDamJAgi2/krXV1dTqeziEMU/xcuNYrFUg4PD2c7zJ1Opzs7OycmJooApKScSCQyNDSUw46JREKr1c7NzeHaQ0qKMRqNoVAot31jsVjmJVAApMyIra2tkZGRPONRmUyW+UsSgJT/wGKx5L+0XjQaVSgU6+vrBfjBPp/vIIMJcFPKlZWV8fFxSg4VDAbVanUgEChAsNHe3t7b28uuShWQMlOsVuv+/j5VR9vY2NBoNOFwmL4fPDMzMz8/n0ql9Hp9R0fH36pLArZKubCwQHmHjtfrVSgUNCVfkiRpMBh+iDg8PNzS0vIj7xOwXspkMqnX6+lI+VlaWmppafk9+S1/7Hb7L69TMzMzDQ0NBYgZIGUhmJqayqco3uF4PB61Wk1hYFBUVBQKhUwm0++fr66ufvz4cWlpCf6xW8p4PP7HC0wh09PT1CYFWyyWv00VCgaDMpkMY0vsltLlchWgnp3L5dLpdJRECD6fz263H7IBQRAqlWpwcBAWslJKgiAKdvGGhoa+fPmS/3FMJtM/b7okSXZ2dvb09KCriH1SDgwMUFUUL8PHbn9/f57h799maPyOwWBoa2tDVxGbpAyHw7nlXuRDX19fznWd4/F4b29vVrs4nU65XM6NuerHQkqj0bi3t1f47/38+fPhQeEhAUAOpWNmZ2cbGxtzWwUCUhaU9fX1PHMv8qGzs3N0dDSrXQKBgMViye3r1tbWGhsb0VXEdCltNhu1fYdZkUqltFptVh03ZrM5nwGbYDDY1NRE1eA+pKQer9frdruP9jeQJKnVaufn5zPZeGFhIX+fotGoSqUaGBiAlEzEbDYzob5FLBbTaDT/XCIpnU4bDAZKCsUkk8murq6enh62l1HgmpTz8/NTU1MM+TG7u7sKhWJjY+OQbdxuN7UrgxgMhtbW1iOMXiDlr7cKpi0qGAqFZDLZ37pLo9FoX18f5V86MjIik8lozayDlJkyNjbGwDk0B28hf0zwGRwc/P79Ox1f6vF4GhsbOVOemK1SxmIxs9nMzPPl9/vVavUvc9a2trZo/cHr6+uNjY3sWjWMa1I6nU4m3xhWVlZaW1t/Tgq2WCx0R36hUEgulx95X8QxlTIajTI/ceYg+fJgtPrbt28ul6sAX0oQhEajyblnHlLmjtVqpSk4o5bZ2VmtVruzs2M2mwuW45NMJru7u3U6HbeziphV4CoUChU+9yJn3G73+vp64Sc22Gy2cDj87t07Fi2Nw2IpTSZT/hO6C8lR5U9MTExEIpH6+vozZ87g8U0jq6urmLGfOYuLiw0NDZws8sEgKa1WK9uL5hf+Pi2Xy6enpyElLSwvLx/z1Jjc2NnZ0Wg0HHvCMEVKo9GIeSq5QRBEW1sbHYOcx1rKqampfxbTB4eQTqf7+/vb29u5kVV09FImEonj0CFcAOx2e1NTEwcW/zt6KUmS5Myis0fO9PT0p0+f2D7RhxGP75KSEvhEFV6vt7m5eXFxEVLmBccWNzhy/H6/Uqlkb28GD5eQk4TDYY1Gw9KJPpCSsyQSia6urmzLIkBKQDt6vb61tZVdNWEgJfdxOp3Nzc05r/ACKQEtzM3NyeXy1dVVSAkYhM/nUygUrFhqDVIeI7a3txUKRbbVkSAloJdYLKZSqWw2G6Q8jHQ6fSSV/o4zOp1OqVQydnT36Mf3BAJBbW3t3t4exnUKfCPw+/1isZiBp50RUr548QKiFJhUKkWSJDNvBIgpjyk8Ho+xkyEhJYCUAEBKACkBgJQAUgLABSl5PKjPIWN4PLp7N2nXpbi4WCQS4VpySUq67zK0j+js7+/bbLby8vJjuMoBJ40kSZLufGHapUwmk4UpdAsQUwIAKQGkBABSAgApAaQEAFICSAkApASQEgBICSAlAJASAIqk5MZKLaCQZLtsV9ZSYvlEQLeUWedT1tTU7O/vCwQCnGuQCYlEItupB8WsqKIJEFMCACkBgJQAUgIAKQGkBABSAkgJAKQEkBIASAkApASQEgBICSAlAJASHCP+A2xkIOt4C5gVAAAAAElFTkSuQmCC';
 
-  LLBaseballCard = Polymer({
-
+  window.LLBaseballCard = Polymer({
     is: 'll-baseball-card',
-
     properties: {
-      /**
-       * Identifier of baseball card primarily used for identifying which card was clicked
-       */
+      // Identifier of baseball card primarily used for identifying
+      // which card was clicked
       imageId: {
         type: String,
         value: ''
       },
-      /**
-       * Title content of the baseball card
-       */
 
+      // Title content of the baseball card
       title: {
         type: String,
         value: ''
       },
-      /**
-       * Source of the image to show for the baseball card. Can be a relative path (/assets/images/ping.png) or a web address (http://lorempixel.com/100/100)
-       */
+      // Source of the image to show for the baseball card.
+      // Can be a relative path (/assets/images/ping.png) or a web address (http://lorempixel.com/100/100)
       imageSource: {
         type: String,
         observer: '_imageSourceChanged',
-        value: ''
+        value: defaultImg,
+        reflectToAttribute: true
       },
-      /**
-       * Property to track if the image has been loaded.
-       */
-      isLoaded: {
-        type: Boolean,
-        value: false,
-        observer: '_handleLoaded'
+
+      // Enforce an aspect ratio for the baseball card image
+      imageAspect: {
+        type: Number,
+        observer: '_imageAspectChanged',
+        value: 0,
+        reflectToAttribute: true
       }
     },
 
-    /**
-     * Fired when a baseball card is clicked. Sends the id on the event
-     *
-     * @event ll-baseball-card-clicked
-     */
+    // Fired when a baseball card is clicked. Sends the id on the event
+    // @event ll-baseball-card-clicked
 
     listeners: {
       'tap': '_onTap'
     },
 
-    ready: function() {
-      this._setImageSrc(this.imageSource);
+    ready: function () {
+      this._onResize = this._onResize.bind(this);
     },
 
-    factoryImpl: function(imageId, title, imageSource) {
+    factoryImpl: function (imageId, title, imageSource, imageAspect) {
       this.imageId = imageId || '';
       this.title = title || '';
       this.imageSource = imageSource || '';
+      this.imageAspect = imageAspect;
     },
 
-    attached: function() {
-      if (this.imageId === '') {
-        throw Error('imageId is required');
-      } else if (this.title === '') {
-        throw Error('title is required');
-      }
+    attached: function () {
+      this.$.image.onload = this._onResize;
+      this.$.image.onerror = this._onResize;
+      window.addEventListener('resize', this._onResize);
     },
 
-    _onTap: function() {
+    detached: function () {
+      window.removeEventListener('resize', this._onResize);
+    },
+
+    _onTap: function () {
+      // Why does ll-baseball-card care about propigating this?
       this.fire('ll-baseball-card-clicked', { id: this.imageId });
     },
-    /**
-     * Attempts to get the image, and then sets the background property accordingly.
-     * This will allow for a spinner to be shown while the image is being downloaded. Since we are not optimizing images as they are saved,
-     * we allow for very large images to be stored. If we optimize the images-api, this could go away.
-     */
-    _setImageSrc: function(src) {
-      if(src) {
-        var _img = new Image();
-        _img.src = src;
+    _onResize: function () {
+      this._fixImageAspect(this.imageAspect);
+    },
 
-        _img.onload = function() {
-          this.$.image.style.backgroundImage = "url('" + src + "')";
-          this.isLoaded = true;
-        }.bind(this);
+    // Sets the template's image element to the imageSource of the component.
+    // defaults to the base64 inlinded landscape shilouette..
+    _setImageSrc: function (src) {
+      this.$.image.src = src || defaultImg;
+    },
 
-        _img.onerror = function() {
-          this.isLoaded = true;
-          this.$.image.style.backgroundImage = "url('" + '' + "')";
-          //TODO: set a 404 style image here to indicate the failure.
-        }.bind(this);
+    _imageSourceChanged: function (newImageSource) {
+      this._setImageSrc(newImageSource);
+    },
 
-      } else {
-        var defaultImg = 'data:image/png;base64,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';
-        this.$.image.style.backgroundImage = "url('" + defaultImg + "')";
-        this.isLoaded = true;
+    _fixImageAspect: function (aspect) {
+      if (aspect) {
+        var w = parseInt(window.getComputedStyle(this.$.image).width, 10);
+        if (w) {
+          var h = w * aspect;
+          this.$.image.height = h;
+          return
+        }
       }
+      // either no aspect or no width (paint no finished).
+      this.$.image.removeAttribute('height');
     },
-    _imageSourceChanged: function(newImageSource) {
-       this._setImageSrc(newImageSource);
-    },
-    /**
-     * Toggles the visibility on the spinner
-     * @param newVal
-     * @private
-     */
-    _handleLoaded: function(newVal) {
-      this.toggleClass('hidden', newVal, this.$.spinner);
+
+    _imageAspectChanged: function (aspect) {
+      this._fixImageAspect(aspect);
     }
   });
-
+})();
 </script>
