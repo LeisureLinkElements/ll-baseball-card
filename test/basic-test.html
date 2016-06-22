@@ -15,22 +15,6 @@
 
       describe('ll-baseball-card', function() {
 
-        describe('required properties', function() {
-
-          it('should require imageId', function() {
-            expect(function() {
-              new LLBaseballCard().attached();
-            }).to.throw('imageId is required');
-          });
-
-          it('should require title', function() {
-            expect(function() {
-              new LLBaseballCard('id').attached();
-            }).to.throw('title is required');
-          });
-
-        });
-
         describe('events', function() {
 
           it('should fire an event on click', function(done) {
@@ -51,6 +35,13 @@
             });
 
             el.click();
+          });
+
+          it('should accept an `imageAspect` property', function (done) {
+            el = new LLBaseballCard('id', 'title', 'imageSource', '.75');
+            el.imageSource = 'http://cdn.modernfarmer.com/wp-content/uploads/2014/09/innercowhero.jpg';
+            expect(el.querySelector('.img').src).to.equal('http://cdn.modernfarmer.com/wp-content/uploads/2014/09/innercowhero.jpg');
+            done();
           });
 
         });
